@@ -1,0 +1,26 @@
+.root {
+	background-color: transparent;
+	border-radius: 20px;
+}
+
+.color_primary {
+	background-color: pink;
+	border: 1px solid purple;
+}
+
+.color_secondary {
+	background-color: grey;
+	border: 1px solid darkgoldenrod;
+}
+
+.size_s {
+	padding: 10px;
+}
+
+.size_m {
+	padding: 20px;
+}
+
+.size_l {
+	padding: 30px;
+}
