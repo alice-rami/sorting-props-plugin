@@ -20,22 +20,25 @@ export const Button = ({
 	const ref = useRef<HTMLButtonElement>();
 	return (
 		<button
+			// коммент про онклик
+			disabled
 			key={1}
+			onClick={onClick} // do you know what I mean?
 			ref={(node) => {
 				if (node) {
-					ref.current = node;
+					ref.current = node; // важная тема
 				}
+				// skjgdl
 			}}
-			disabled
+			// comment pro d
 			aria-label='some label'
-			data-test-id='button'
+			data-test-id='button' // I need to tell you someting
 			className={cn(
 				styles.root,
 				styles[`size_${size}`],
 				styles[`color_${color}`],
 				{ [styles.disabled]: disabled }
 			)}
-			onClick={onClick}
 		>
 			{children}
 		</button>
