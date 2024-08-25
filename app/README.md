@@ -1,50 +1,81 @@
-# React + TypeScript + Vite
+# Плагин для сортировки атрибутов в JSX
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+По умолчанию сортирует атрибуты в алфавитном порядке
+Задать порядок атрибутов можно в свойстве order.
 
-Currently, two official plugins are available:
+### 2 специальные значения:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **shorthand** - для краткой записи boolean-свойств (например, disabled)
+- **other** - плейсхолдер для свойств, не относящихся ни к одной из указанных категорий
 
-## Expanding the ESLint configuration
+### Cвойства группируются по указанным префиксам
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- можно указать название свойства целиком: 'key', 'className', 'size' и др.
+- можно указать начальный префикс свойства до заглавной буквы, т.к. записываются в camelCase:
+  - 'on' (например, для onSubmit, onMouseOver),
+  - 'handle' (например, для handleClick, handleSubmit),
+  - 'is' (например, isVisible, isHidden) и др.
+- в качестве исключения группы свойств **aria-** и **data-** указываются с дефисом, т.к. записываются в kebab-case
 
-- Configure the top-level `parserOptions` property like this:
+### Внутри каждой группы свойства сортируются в алфавитном порядке
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### Spread-оператор
+
+- если встречается **spread-оператор** (например, {...props}), то свойства сортируются до него и после него, чтобы избежать конфликтов с переопределением значений
+
+### Пример
+
+```
+'sort/sort-props': [
+				'warn',
+				{
+					order: [
+						'shorthand',
+						'key',
+						'size',
+						'on',
+						'handle',
+						'aria-',
+						'data-',
+						'other',
+						'className',
+					],
+				},
+			],
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+**Без spead-оператора**
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+```
+<Button
+				disabled
+				key={1}
+				size='s'
+				onClick={() => console.log('click')}
+				onFocus={() => console.log('focus')}
+				onSubmit={() => console.log('submit')}
+				handleClick={() => console.log('hello')}
+				color='primary'
+			>
+				Hello
+</Button>
+```
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+**Со spread-оператором**
+
+```
+		<Button
+				disabled
+				key={2}
+				color='secondary'
+				className={'button'}
+				{...props}
+				size='l'
+				onClick={() => console.log('click')}
+				onSubmit={() => console.log('submit')}
+				handleClick={() => console.log('hello')}
+			>
+				Hello
+			</Button>
+
 ```
