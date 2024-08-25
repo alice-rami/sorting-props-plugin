@@ -5,12 +5,12 @@ const { propName } = pkg;
 let attributeMap;
 let prefixes;
 let propsOrder;
+let isShorthandSorted;
+let isAriaSorted;
+let isDataSorted;
 
 const propGroupsMap = {
 	other: [],
-	shortHand: [],
-	'data-': [],
-	'aria-': [],
 };
 
 const isAria = (propName) => /^aria-[a-z]/.test(propName);
@@ -38,17 +38,17 @@ const addToPropsGroup = (prop, name) => {
 const sortProp = (prop) => {
 	const currPropName = propName(prop);
 
-	if (isShorthand(prop)) {
-		propGroupsMap.shortHand.push(prop);
+	if (isShorthandSorted && isShorthand(prop)) {
+		propGroupsMap.shorthand.push(prop);
 		return;
 	}
 
-	if (isAria(currPropName)) {
+	if (isAriaSorted && isAria(currPropName)) {
 		propGroupsMap['aria-'].push(prop);
 		return;
 	}
 
-	if (isData(currPropName)) {
+	if (isDataSorted && isData(currPropName)) {
 		propGroupsMap['data-'].push(prop);
 		return;
 	}
@@ -76,8 +76,8 @@ const sortPropGroup = (group) => {
 	const sortedByPrefix = propsOrder.map((prefix) =>
 		propGroupsMap[prefix].sort(compareProps)
 	);
-	const sortedOther = propGroupsMap.other.sort(compareProps);
-	return sortedByPrefix.flat().concat(sortedOther);
+
+	return sortedByPrefix.flat();
 };
 
 function getGroupsOfSortableAttributes(attributes, context) {
@@ -202,13 +202,26 @@ export default {
 
 	create(context) {
 		const configuration = context.options[0] || {};
-		propsOrder = configuration.order || [];
+
+		propsOrder = configuration.order;
+		if (!propsOrder.includes('other')) {
+			propsOrder.push('other');
+		}
+
 		prefixes = propsOrder.filter(
-			(prefix) => prefix !== 'aria-' && prefix !== 'data-'
+			(prefix) =>
+				prefix !== 'aria-' &&
+				prefix !== 'data-' &&
+				prefix !== 'other' &&
+				prefix !== 'shorthand'
 		);
-		for (const prefix of prefixes) {
+		for (const prefix of propsOrder) {
 			propGroupsMap[prefix] = [];
 		}
+
+		isShorthandSorted = propsOrder.includes('shorthand');
+		isAriaSorted = propsOrder.includes('aria-');
+		isDataSorted = propsOrder.includes('data-');
 
 		return {
 			Program() {
