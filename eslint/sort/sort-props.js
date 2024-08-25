@@ -1,4 +1,4 @@
-import { getSourceCode, getText } from './utils.js';
+import { getSourceCode } from './utils.js';
 import pkg from 'jsx-ast-utils';
 const { propName } = pkg;
 
@@ -203,7 +203,7 @@ export default {
 	create(context) {
 		const configuration = context.options[0] || {};
 
-		propsOrder = configuration.order;
+		propsOrder = configuration.order || [];
 		if (!propsOrder.includes('other')) {
 			propsOrder.push('other');
 		}
@@ -219,9 +219,9 @@ export default {
 			propGroupsMap[prefix] = [];
 		}
 
-		isShorthandSorted = propsOrder.includes('shorthand');
-		isAriaSorted = propsOrder.includes('aria-');
-		isDataSorted = propsOrder.includes('data-');
+		isShorthandSorted = Object.hasOwn(propGroupsMap, 'shorthand');
+		isAriaSorted = Object.hasOwn(propGroupsMap, 'aria-');
+		isDataSorted = Object.hasOwn(propGroupsMap, 'data-');
 
 		return {
 			Program() {
@@ -249,7 +249,7 @@ export default {
 								message: 'wrong props order',
 								fix(fixer) {
 									const fixers = [];
-									let source = getText(context);
+									let source = getSourceCode(context).getText();
 
 									sortableAttributeGroups.forEach((sortableGroup, ii) => {
 										sortableGroup.forEach((attr, jj) => {
