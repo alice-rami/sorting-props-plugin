@@ -3,21 +3,15 @@ import pkg from 'jsx-ast-utils';
 const { propName } = pkg;
 
 let attributeMap;
+let prefixes;
+let propsOrder;
 
-const order = ['shortHand', 'key', 'size', 'on', 'handle', 'aria-', 'data-'];
-const prefixes = order.filter(
-	(prefix) => prefix !== 'aria-' && prefix !== 'data-'
-);
 const propGroupsMap = {
 	other: [],
 	shortHand: [],
 	'data-': [],
 	'aria-': [],
 };
-
-for (const prefix of prefixes) {
-	propGroupsMap[prefix] = [];
-}
 
 const isAria = (propName) => /^aria-[a-z]/.test(propName);
 const isData = (propName) => /^data-[a-z]/.test(propName);
@@ -29,6 +23,7 @@ const addToPropsGroup = (prop, name) => {
 	for (const prefix of prefixes) {
 		const re = new RegExp(`^${prefix}[A-Z]`);
 		const reFull = new RegExp(`^${prefix}$`);
+
 		if (re.test(name) || reFull.test(name)) {
 			propGroupsMap[prefix].push(prop);
 			isOther = false;
@@ -66,7 +61,7 @@ const sortPropGroup = (group) => {
 		propGroupsMap[key] = [];
 	}
 	group.forEach(sortProp);
-	const sortedByPrefix = order.map((prefix) =>
+	const sortedByPrefix = propsOrder.map((prefix) =>
 		propGroupsMap[prefix].sort((a, b) => propName(a) - propName(b))
 	);
 	const sortedOther = propGroupsMap.other.sort(
@@ -195,9 +190,14 @@ export default {
 	},
 
 	create(context) {
-		// const configuration = context.options[0] || {};
-		// const propsOrder = configuration.order || [];
-		// TODO: Как передавать порядок пропсов?
+		const configuration = context.options[0] || {};
+		propsOrder = configuration.order || [];
+		prefixes = propsOrder.filter(
+			(prefix) => prefix !== 'aria-' && prefix !== 'data-'
+		);
+		for (const prefix of prefixes) {
+			propGroupsMap[prefix] = [];
+		}
 
 		return {
 			Program() {

@@ -2,7 +2,6 @@ import js from '@eslint/js';
 import globals from 'globals';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
-// import eslintPluginExample from './eslint/test/eslint-plugin-example.js';
 import sort from './eslint/sort/eslint-plugin-sort.js';
 // import react from 'eslint-plugin-react';
 import tseslint from 'typescript-eslint';
@@ -20,7 +19,6 @@ export default tseslint.config(
 			'react-hooks': reactHooks,
 			'react-refresh': reactRefresh,
 			// react: react,
-			// example: eslintPluginExample,
 			sort: sort,
 		},
 		rules: {
@@ -44,7 +42,12 @@ export default tseslint.config(
 			// 	},
 			// ],
 			// 'example/enforce-foo-bar': 'error',
-			'sort/sort-props': 'warn',
+			'sort/sort-props': [
+				'warn',
+				{
+					order: ['shortHand', 'key', 'size', 'on', 'handle', 'aria-', 'data-'],
+				},
+			],
 		},
 	}
 );
