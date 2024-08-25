@@ -4,40 +4,50 @@ import viteLogo from '/vite.svg';
 import './App.css';
 import { Button } from './components/Button/Button';
 
-function App(props) {
+type AppProps = {
+	prop1: string;
+	prop2: string;
+	prop3?: () => void;
+};
+
+function App(props: AppProps) {
 	const [count, setCount] = useState(0);
 
 	return (
 		<>
 			<div>
 				<a href='https://vitejs.dev' target='_blank'>
-					<img alt='Vite logo' className='logo' src={viteLogo} />
+					<img alt='Vite logo' src={viteLogo} className='logo' />
 				</a>
 				<a href='https://react.dev' target='_blank'>
-					<img alt='React logo' className='logo react' src={reactLogo} />
+					<img alt='React logo' src={reactLogo} className='logo react' />
 				</a>
 			</div>
 			<h1>Vite + React</h1>
 			<Button
 				disabled
-				key={1}
-				size='s'
-				onClick={() => console.log('Hello1')}
+				onClick={() => console.log('click')}
 				onFocus={() => console.log('focus')}
 				onSubmit={() => console.log('submit')}
 				handleClick={() => console.log('hello')}
+				key={1}
+				size='s'
 				color='primary'
 			>
 				Hello
 			</Button>
 			<Button
-				disabled
-				handleClick={() => console.log('hello')}
-				color='secondary'
-				{...props}
 				key={2}
+				color='secondary'
+				className={'button'}
+				{...props}
+				disabled
+				onClick={() => console.log('click')}
+				onSubmit={() => console.log('submit')}
+				handleClick={() => console.log('hello')}
+				aria-label={'some-label'}
+				data-test-id={'button'}
 				size='l'
-				onClick={() => console.log('Hello1')}
 			>
 				Hello
 			</Button>
