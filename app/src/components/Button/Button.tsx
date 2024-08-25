@@ -24,14 +24,9 @@ export const Button = ({
 			disabled
 			key={1}
 			onClick={onClick} // do you know what I mean?
-			ref={(node) => {
-				if (node) {
-					ref.current = node; // важная тема
-				}
-				// skjgdl
-			}}
-			// comment pro d
+			aria-disabled='false'
 			aria-label='some label'
+			aria-roledescription='sfjsjf'
 			data-test-id='button' // I need to tell you someting
 			className={cn(
 				styles.root,
@@ -39,6 +34,11 @@ export const Button = ({
 				styles[`color_${color}`],
 				{ [styles.disabled]: disabled }
 			)}
+			ref={(node) => {
+				if (node) {
+					ref.current = node; // важная тема
+				}
+			}}
 		>
 			{children}
 		</button>

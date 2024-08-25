@@ -10,7 +10,7 @@ function App(props) {
 	return (
 		<>
 			<div>
-				<a target='_blank' href='https://vitejs.dev'>
+				<a href='https://vitejs.dev' target='_blank'>
 					<img alt='Vite logo' className='logo' src={viteLogo} />
 				</a>
 				<a href='https://react.dev' target='_blank'>
@@ -19,22 +19,24 @@ function App(props) {
 			</div>
 			<h1>Vite + React</h1>
 			<Button
-				color='primary'
 				disabled
-				handleClick={() => console.log('hello')}
+				key={1}
 				size='s'
 				onClick={() => console.log('Hello1')}
-				key={1}
+				onFocus={() => console.log('focus')}
+				onSubmit={() => console.log('submit')}
+				handleClick={() => console.log('hello')}
+				color='primary'
 			>
 				Hello
 			</Button>
 			<Button
-				color='secondary'
-				disabled={false}
+				disabled
 				handleClick={() => console.log('hello')}
+				color='secondary'
 				{...props}
-				size='l'
 				key={2}
+				size='l'
 				onClick={() => console.log('Hello1')}
 			>
 				Hello

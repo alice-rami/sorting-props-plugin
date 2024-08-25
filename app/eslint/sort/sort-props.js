@@ -56,17 +56,27 @@ const sortProp = (prop) => {
 	addToPropsGroup(prop, currPropName);
 };
 
+const compareProps = (a, b) => {
+	const nameA = propName(a);
+	const nameB = propName(b);
+	if (nameA < nameB) {
+		return -1;
+	}
+	if (nameB > nameA) {
+		return 1;
+	}
+	return 0;
+};
+
 const sortPropGroup = (group) => {
 	for (const key in propGroupsMap) {
 		propGroupsMap[key] = [];
 	}
 	group.forEach(sortProp);
 	const sortedByPrefix = propsOrder.map((prefix) =>
-		propGroupsMap[prefix].sort((a, b) => propName(a) - propName(b))
+		propGroupsMap[prefix].sort(compareProps)
 	);
-	const sortedOther = propGroupsMap.other.sort(
-		(a, b) => propName(a) - propName(b)
-	);
+	const sortedOther = propGroupsMap.other.sort(compareProps);
 	return sortedByPrefix.flat().concat(sortedOther);
 };
 
@@ -86,6 +96,7 @@ function getGroupsOfSortableAttributes(attributes, context) {
 		let comment = [];
 		try {
 			comment = sourceCode.getCommentsAfter(attribute);
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (e) {
 			/**/
 		}
